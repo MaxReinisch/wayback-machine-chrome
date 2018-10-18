@@ -134,12 +134,12 @@ function addBookFromOpenLibrary(metadata){
             event1.show_context="tab";
         }
         if(event1.show_context=="tab"){
-            chrome.tabs.create({url:"https://archive.org/donate/"});
+            chrome.tabs.create({url:chrome.runtime.getURL("donatebook.html") + "?isbn=" +metadata.isbn_10});
         }else{
           chrome.system.display.getInfo(function(displayInfo){
             let height = displayInfo[0].bounds.height;
             let width = displayInfo[0].bounds.width;
-            chrome.windows.create({url:"https://archive.org/donate/", width:width/2, height:height, top:0, left:0, focused:true});
+            chrome.windows.create({url:chrome.runtime.getURL("donatebook.html"), width:width/2, height:height, top:0, left:0, focused:true});
           });
         }
     });
