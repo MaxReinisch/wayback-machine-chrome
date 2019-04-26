@@ -318,11 +318,6 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
-// Show context options
-function show_context_options() {
-  $('#context-options').toggleClass("show_context_options");
-  $('.icon_dropdown').toggleClass("tranform_icon_dropdown");
-}
 
 window.onloadFuncs = [get_url, borrow_books, show_news, show_wikibooks]
 window.onload = function () {
@@ -346,4 +341,3 @@ $('.feedback').click(open_feedback_page)
 $('#overview').click(view_all)
 $('#make_modal').click(makeModal)
 $('#search_input').keydown(display_suggestions)
-$('#show_context_options').click(show_context_options)
