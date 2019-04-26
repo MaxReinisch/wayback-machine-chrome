@@ -274,6 +274,13 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         if (data && data.response && data.response.docs && data.response.docs.length > 0) {
           identifier = data.response.docs[0].identifier
         }
+        chrome.runtime.sendMessage({
+            msg: "found_book",
+            data: {
+                subject: "identifier",
+                content: identifier
+            }
+        });
         sendResponse(identifier)
 
       })
@@ -281,25 +288,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         console.log(err)
       })
     return true
-    // $.ajax({
-    //   url: url,
-    //   type: 'GET',
-    //   dataType: 'json',
-    //   crossDomain: true,
-    //   jsonp: 'callback'
-    // })
-    // .done(function (data) {
-    //   let identifier = null
-    //   if (data.response.docs.length > 0) {
-    //     let identifier = data.response.docs[0].identifier
-    //   }
-    //   console.log(identifier)
-    //   sendResponse(identifier)
-    //
-    // })
-    // .fail(function (err) {
-    //   console.log(err)
-    // })
   } else if (message.message === 'sendurl') {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       chrome.tabs.sendMessage(tabs[0].id, { url: tabs[0].url });

@@ -308,6 +308,16 @@ function show_wikibooks() {
   })
 }
 
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.msg === "found_book") {
+            //  To do something
+            console.log(request.data.subject)
+            console.log(request.data.content)
+        }
+    }
+);
+
 // Show context options
 function show_context_options() {
   $('#context-options').toggleClass("show_context_options");
