@@ -308,18 +308,39 @@ function show_wikibooks() {
   })
 }
 
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        if (request.msg === "found_book") {
-            //  To do something
-            console.log(request.data.subject)
-            console.log(request.data.content)
-        }
-    }
-);
+function show_citations(){
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    url = tabs[0].url
+    tabId = tabs[0].id
+    chrome.storage.sync.get(['citations', 'show_context'], function (event) {
+      if (event.show_context === undefined) {
+        event.show_context = 'tab'
+      }
+      if(event.citations){
+        $('#citation_tr').show().click(function(){
+          if (event.show_context === 'tab') {
+            chrome.tabs.create({ url: chrome.runtime.getURL('citation_page.html') + "?url=" + url})
+          } else {
+            chrome.windows.getCurrent(function (window) {
+              const height = window.height
+              const width = window.width
+              chrome.windows.create({
+                url: chrome.runtime.getURL('citation_page.html') + "?url=" + url,
+                width: width / 2,
+                height: height,
+                top: 0,
+                left: width / 2
+              })
+            })
+          }
+        })
+      }
+    })
+  })
+}
 
 
-window.onloadFuncs = [get_url, borrow_books, show_news, show_wikibooks]
+window.onloadFuncs = [get_url, borrow_books, show_news, show_wikibooks, show_citations]
 window.onload = function () {
   for (var i in this.onloadFuncs) {
     this.onloadFuncs[i]()

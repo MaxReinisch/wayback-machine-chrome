@@ -2,17 +2,24 @@
 // on https://jwa.org/teach/livingthelegacy/jews-and-farming-in-america
 // Parse citation to get creator:"Herscher, Uri D" AND title:"Jewish Agricultural Utopias in America"
 // search archive to get https://archive.org/details/jewishagricultur0000hers
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  if(message.message==="GiveMeCitations"){
+    sendResponse("butts")
+  }
+  if(message.message==="backgroundCitations"){
+    console.log("background message")
+    sendResponse({message: "Background butts"})
+  }
+})
 
-function v2() {
+function v2(body) {
   let citation_pattern = /.*, .* \(.*,\s(Inc\.\s)?\d\d\d\d\)(,)?\s?(\d*(,\s)?)*\./g;
-  let body = $('body').innerText;
   if(body === undefined){
     body = $('body')[0].innerText;
   }
-  console.log(body.match(citation_pattern))
-  console.log(body.match(citation_pattern).map(getCitation).map(getAdvancedSearchQuery))
-  // TODO: Make a window for this instead of inline citations
-  findCitations()
+  // console.log(body.match(citation_pattern))
+  // console.log(body.match(citation_pattern).map(getCitation).map(getAdvancedSearchQuery))
+  return body.match(citation_pattern);
 }
 
 function findCitations() {
@@ -76,15 +83,12 @@ function advancedSearch(citation, cand) {
     if (identifier) {
       insertLink(getUrlFromIdentifier(identifier, citation), cand)
     }
-    // $(cand).html(
-    //   cand.innerHTML.replace('<em>', '<a href="https://archive.org/details/' + identifier + pagestring + '"><em>').replace('</em>', '</em></a>')
-    // )
   })
 }
 
 function getUrlFromIdentifier(identifier, citation) {
   let pagestring = ''
-  if (citation.pages) {
+  if (citation && citation.pages) {
     pagestring = '/page/' + citation.pages[0]
   }
   let url = 'https://archive.org/details/' + identifier + pagestring

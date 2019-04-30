@@ -264,6 +264,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       })
       return true
   } else if(message.message === 'citationadvancedsearch'){
+    console.log(sender.tab.id)
     let host = 'https://archive.org/advancedsearch.php?q='
     let endsearch = '&fl%5B%5D=identifier&sort%5B%5D=&sort%5B%5D=&sort%5B%5D=&rows=50&page=1&output=json&save=yes'
     let url = host + encodeURI(message.query) + endsearch
@@ -274,13 +275,13 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         if (data && data.response && data.response.docs && data.response.docs.length > 0) {
           identifier = data.response.docs[0].identifier
         }
-        chrome.runtime.sendMessage({
-            msg: "found_book",
-            data: {
-                subject: "identifier",
-                content: identifier
-            }
-        });
+        // chrome.runtime.sendMessage({
+        //     msg: "found_book",
+        //     data: {
+        //         subject: "identifier",
+        //         content: identifier
+        //     }
+        // });
         sendResponse(identifier)
 
       })
@@ -288,6 +289,14 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         console.log(err)
       })
     return true
+  } else if (message.message === 'GiveMeCitations'){
+    console.log(message)
+    chrome.tabs.sendMessage(parseInt(message.tabId), {
+      message: "backgroundCitations"
+    }, function(response){
+      console.log(response.message)
+    })
+
   } else if (message.message === 'sendurl') {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       chrome.tabs.sendMessage(tabs[0].id, { url: tabs[0].url });
