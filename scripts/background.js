@@ -200,6 +200,7 @@ chrome.webRequest.onCompleted.addListener(function (details) {
   }
 }, { urls: ["<all_urls>"], types: ["main_frame"] });
 
+let candidates = [];
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.message === 'openurl') {
     var page_url = message.page_url;
@@ -264,7 +265,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       })
       return true
   } else if(message.message === 'citationadvancedsearch'){
-    console.log(sender.tab.id)
     let host = 'https://archive.org/advancedsearch.php?q='
     let endsearch = '&fl%5B%5D=identifier&sort%5B%5D=&sort%5B%5D=&sort%5B%5D=&rows=50&page=1&output=json&save=yes'
     let url = host + encodeURI(message.query) + endsearch
@@ -289,14 +289,10 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         console.log(err)
       })
     return true
-  } else if (message.message === 'GiveMeCitations'){
-    console.log(message)
-    chrome.tabs.sendMessage(parseInt(message.tabId), {
-      message: "backgroundCitations"
-    }, function(response){
-      console.log(response.message)
-    })
-
+  } else if (message.message === 'citation_candidates'){
+    candidates = message.candidates;
+  } else if (message.message === 'get_candidates'){
+    sendResponse(candidates)
   } else if (message.message === 'sendurl') {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       chrome.tabs.sendMessage(tabs[0].id, { url: tabs[0].url });

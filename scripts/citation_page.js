@@ -1,15 +1,8 @@
 $(document).ready(function() {
-  let url = getUrlByParameter('url')
-  $.ajax({
-    url: url,
-    type: 'GET',
-    dataType: 'html'
-  })
-  .done(function(res) {
-    let span = document.createElement('span');
-    span.innerHTML = res;
-    let body = (span.textContent || span.innerText);
-    let candidates = v2(body);
+  chrome.runtime.sendMessage({
+    message: 'get_candidates'
+  }, function(candidates){
+    console.log(candidates)
     for(let i = 0; i < candidates.length; i++){
       let citation = getCitation(candidates[i])
       if (citation) {
@@ -31,8 +24,5 @@ $(document).ready(function() {
         })
       }
     }
-  })
-  .fail(function() {
-    console.log("error");
   })
 });

@@ -2,15 +2,8 @@
 // on https://jwa.org/teach/livingthelegacy/jews-and-farming-in-america
 // Parse citation to get creator:"Herscher, Uri D" AND title:"Jewish Agricultural Utopias in America"
 // search archive to get https://archive.org/details/jewishagricultur0000hers
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-  if(message.message==="GiveMeCitations"){
-    sendResponse("butts")
-  }
-  if(message.message==="backgroundCitations"){
-    console.log("background message")
-    sendResponse({message: "Background butts"})
-  }
-})
+
+
 
 function v2(body) {
   let citation_pattern = /.*, .* \(.*,\s(Inc\.\s)?\d\d\d\d\)(,)?\s?(\d*(,\s)?)*\./g;
@@ -23,6 +16,17 @@ function v2(body) {
 }
 
 function findCitations() {
+  let citation_pattern = /.*, .* \(.*,\s(Inc\.\s)?\d\d\d\d\)(,)?\s?(\d*(,\s)?)*\./g;
+  let body = $('body').innerText;
+  if(body === undefined){
+    body = $('body')[0].innerText;
+  }
+  chrome.runtime.sendMessage({
+    message: "citation_candidates",
+    candidates: body.match(citation_pattern)
+  })
+
+
   let candidates = $("a[href^='#_ftnref']").parent()
   for (let i = 0; i < candidates.length; i++) {
     let citation = getCitation(candidates[i].innerText || candidates[i].textContent)
