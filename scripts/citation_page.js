@@ -20,6 +20,10 @@ $(document).ready(function() {
                 }).text(candidates[i])
               )
             )
+          }else{
+            $('#citation_tray').append(
+              $('<li>').text(candidates[i])
+            )
           }
         })
       }
