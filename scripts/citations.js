@@ -3,31 +3,21 @@
 // Parse citation to get creator:"Herscher, Uri D" AND title:"Jewish Agricultural Utopias in America"
 // search archive to get https://archive.org/details/jewishagricultur0000hers
 
-
-
-function v2(body) {
-  let citation_pattern = /.*, .* \(.*,\s(Inc\.\s)?\d\d\d\d\)(,)?\s?(\d*(,\s)?)*\./g;
-  if(body === undefined){
-    body = $('body')[0].innerText;
-  }
-  // console.log(body.match(citation_pattern))
-  // console.log(body.match(citation_pattern).map(getCitation).map(getAdvancedSearchQuery))
-  return body.match(citation_pattern);
-}
-
 function findCitations() {
   let citation_pattern = /.*, .* \(.*,\s(Inc\.\s)?\d\d\d\d\)(,)?\s?(\d*(,\s)?)*\./g;
   let body = $('body').innerText;
   if(body === undefined){
     body = $('body')[0].innerText;
   }
+  let candidates = body.match(citation_pattern)
+
   chrome.runtime.sendMessage({
     message: "citation_candidates",
-    candidates: body.match(citation_pattern)
+    candidates: candidates
   })
 
 
-  let candidates = $("a[href^='#_ftnref']").parent()
+  candidates = $("a[href^='#_ftnref']").parent()
   for (let i = 0; i < candidates.length; i++) {
     let citation = getCitation(candidates[i].innerText || candidates[i].textContent)
     if (citation) {

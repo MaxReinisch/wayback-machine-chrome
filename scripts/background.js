@@ -200,7 +200,7 @@ chrome.webRequest.onCompleted.addListener(function (details) {
   }
 }, { urls: ["<all_urls>"], types: ["main_frame"] });
 
-let candidates = [];
+let candidates = []; // used for citations
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.message === 'openurl') {
     var page_url = message.page_url;
@@ -275,13 +275,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         if (data && data.response && data.response.docs && data.response.docs.length > 0) {
           identifier = data.response.docs[0].identifier
         }
-        // chrome.runtime.sendMessage({
-        //     msg: "found_book",
-        //     data: {
-        //         subject: "identifier",
-        //         content: identifier
-        //     }
-        // });
         sendResponse(identifier)
 
       })

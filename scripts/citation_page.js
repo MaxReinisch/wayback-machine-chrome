@@ -15,7 +15,7 @@ $(document).ready(function() {
             $('#citation_tray').append(
               $('<li>').append(
                 $('<a>').attr({
-                  href: getUrlFromIdentifier(identifier, citation),
+                  href: getUrlFromIdentifier(identifier),
                   target: '_blank'
                 }).text(candidates[i])
               )
