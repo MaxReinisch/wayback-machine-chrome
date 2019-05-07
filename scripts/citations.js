@@ -10,10 +10,12 @@ function findCitations() {
     body = $('body')[0].innerText;
   }
   let candidates = body.match(citation_pattern)
+  let sidecar = candidates.map(getCitation)
 
   chrome.runtime.sendMessage({
     message: "citation_candidates",
-    candidates: candidates
+    candidates: candidates,
+    sidecar: sidecar
   })
 
 
@@ -44,6 +46,7 @@ function getCitation(cit) {
       title = halves[0]
     }
     return {
+      citation: str,
       title: title.replace(/^\s/, '').replace(/\s$/, ''),
       author: author,
       pages: pages,

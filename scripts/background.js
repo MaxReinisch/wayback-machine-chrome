@@ -208,7 +208,7 @@ chrome.webRequest.onCompleted.addListener(function (details) {
   }
 }, { urls: ["<all_urls>"], types: ["main_frame"] });
 
-let candidates = []; // used for citations
+let sidecar = []; // used for citations
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.message === 'openurl') {
     var page_url = message.page_url;
@@ -253,7 +253,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     let host = 'https://gext-api.archive.org/services/context/books?url='
     let url = host + encodeURI(message.query)
     // Encapsulate fetch with a timeout promise object
-    const timeoutPromise = new Promise(function(resolve, reject) {
+    let timeoutPromise = new Promise(function(resolve, reject) {
       setTimeout(() => {
         reject(new Error('timeout'))
       }, 30000);
@@ -275,8 +275,14 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   } else if(message.message === 'citationadvancedsearch'){
     let host = 'https://gext-api.archive.org/advancedsearch.php?q='
     let endsearch = '&fl%5B%5D=identifier&sort%5B%5D=&sort%5B%5D=&sort%5B%5D=&rows=50&page=1&output=json&save=yes'
-    let url = host + encodeURI(message.query) + endsearch
-    fetch(url)
+    let url = host + encodeURI(message.query) + endsearch;
+    let timeoutPromise = new Promise(function(resolve, reject) {
+      setTimeout(() => {
+        reject(new Error('timeout'))
+      }, 30000);
+      fetch(url).then(resolve, reject)
+    })
+    timeoutPromise
       .then(response => response.json())
       .then(function (data) {
         let identifier = null
@@ -291,9 +297,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       })
     return true
   } else if (message.message === 'citation_candidates'){
-    candidates = message.candidates;
-  } else if (message.message === 'get_candidates'){
-    sendResponse(candidates)
+    sidecar = message.sidecar;
+  } else if (message.message === 'get_sidecar'){
+    sendResponse(sidecar)
   } else if (message.message === 'sendurl') {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       chrome.tabs.sendMessage(tabs[0].id, { url: tabs[0].url });

@@ -42,7 +42,7 @@
     },
     {
         "matches": [
-          "http://jwa.org/teach/*", "https://jwa.org/teach/*", "https://www.future-ethics.com/notes"
+          "<all_urls>"
         ],
         "js": ["scripts/build.js", "scripts/utils.js", "scripts/citations.js", "scripts/citations_loader.js"]
       }
