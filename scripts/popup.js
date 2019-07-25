@@ -329,6 +329,14 @@ function show_wikibooks() {
           const URL = chrome.runtime.getURL('doi.html') + '?url=' + url
           openByWindowSetting(URL)
         })
+        // show wikipedia editors' helper (demo)
+        console.log(url)
+        if(getTargets().includes(url)){
+          $('#wikihelper_tr').show().click(function () {
+            const URL = chrome.runtime.getURL('demo_wiki_helper.html') + '?url=' + url
+            openByWindowSetting(URL)
+          })
+        }
       }
     })
   })
